@@ -8,7 +8,18 @@
 // }
 
 // handle keyboard press
+
+// adding audio
+const audio = new Audio();
+
+const artBoard = document.getElementById("art-board");
+
+//validating if the game is on
+let isGamePlayOn = false;
+
 function keyboardHandler(e) {
+  // out of the function if play button is not clicked
+  if (isGamePlayOn == false) return;
   // pressed key
   const playerPressed = e.key;
 
@@ -23,6 +34,10 @@ function keyboardHandler(e) {
     .innerText.toLowerCase();
 
   if (playerPressed === currentAlphabet) {
+    // add sound
+    audio.src = "../audio/success.mp3";
+    audio.play();
+
     // update score
     const currentScore = getInnerTextById("current-score");
     const updatedScore = currentScore + 1;
@@ -32,9 +47,20 @@ function keyboardHandler(e) {
     // clear the background of pressed key
     removeBackgroundColor(currentAlphabet);
   } else {
+    // add sound
+    audio.src = "../audio/invalid.mp3";
+    audio.play();
+
+    // back-ground change
+
     // update life
     const currentLife = getInnerTextById("current-life");
     const updatedLife = currentLife - 1;
+
+    // set background as the updated life
+    const updatedLifePercentage = (updatedLife / 5) * 100;
+    artBoard.style.background = `linear-gradient(#B4B4BAB3 ${updatedLifePercentage}%,red)`;
+
     setInnerTextById("current-life", updatedLife);
 
     // prevent negative life and switch playground and score page
@@ -70,6 +96,9 @@ function play() {
   setInnerTextById("current-score", 0);
 
   continueGame();
+
+  // validating if the paly btn is pressed
+  isGamePlayOn = true;
 }
 
 function gameOver() {
@@ -83,4 +112,8 @@ function gameOver() {
   // clear the last alphabet background
   const currentAlphabet = getElementById("current-alphabet");
   removeBackgroundColor(currentAlphabet);
+  // validating the sound
+  isGamePlayOn = false;
+  // reset background
+  artBoard.style.background = "linear-gradient(#B4B4BAB3 100%,red)";
 }
